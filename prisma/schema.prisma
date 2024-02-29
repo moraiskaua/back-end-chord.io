@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  dailyChordId String?  @db.ObjectId
+  image        String?
+  name         String
+  email        String   @unique
+  password     String
+  points       Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  userChords UserChord[]
+
+  @@map("users")
+}
+
+model DailyChord {
+  id    String   @id @default(auto()) @map("_id") @db.ObjectId
+  name  String
+  notes String[]
+  date  DateTime @default(now())
+
+  userChords UserChord[]
+
+  @@map("daily_chords")
+}
+
+model UserChord {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId       String   @db.ObjectId
+  dailyChordId String   @db.ObjectId
+  attempts     Int      @default(0)
+  correct      Boolean?
+
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  dailyChord DailyChord @relation(fields: [dailyChordId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, dailyChordId])
+  @@map("user_chords")
+}
