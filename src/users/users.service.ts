@@ -14,4 +14,12 @@ export class UsersService {
       },
     });
   }
+
+  async getAllUsers() {
+    return this.usersRepo.findMany({
+      orderBy: {
+        points: 'desc',
+      },
+    });
+  }
 }

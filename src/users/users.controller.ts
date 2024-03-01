@@ -6,6 +6,11 @@ import { ActiveUserId } from 'src/shared/decorators/ActiveUserId';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @Get()
+  getAllUsers() {
+    return this.usersService.getAllUsers();
+  }
+
   @Get('/me')
   me(@ActiveUserId() userId: string) {
     return this.usersService.getUserById(userId);
